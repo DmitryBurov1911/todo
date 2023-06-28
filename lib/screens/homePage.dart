@@ -12,8 +12,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _myBox = Hive.openBox('mybox');
+  final _myBox = Hive.box('mybox');
   ToDoDataBase db = ToDoDataBase();
+
+  @override
+  void initState() {
+    if (_myBox.get("TODOLIST") == null) {
+      db.createInitialData();
+    } else {
+      db.loadData();
+    }
+
+    super.initState();
+  }
 
   final _controller = TextEditingController();
 
@@ -21,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDataBase();
   }
 
   void saveNewTask() {
@@ -28,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
+    db.updateDataBase();
     Navigator.of(context).pop();
   }
 
@@ -41,12 +54,14 @@ class _HomePageState extends State<HomePage> {
             onCancel: Navigator.of(context).pop,
           );
         });
+    db.updateDataBase();
   }
 
   void deleteTask(index) {
     setState(() {
       db.toDoList.removeAt(index);
     });
+    db.updateDataBase();
   }
 
   @override

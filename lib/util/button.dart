@@ -16,6 +16,7 @@ class AppButton extends StatelessWidget {
         onPressed: onPressed,
         color: Theme.of(context).primaryColor,
         child: Text(text),
+        elevation: 0,
     );
   }
 }
